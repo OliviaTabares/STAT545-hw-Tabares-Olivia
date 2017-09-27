@@ -1,7 +1,8 @@
 # STAT545-hw-Tabares-Olivia
 **This is a repository created to hold the homeworks of the STAT 545 class**
 ***   
-Homework 2
+[Homework 2](https://github.com/OliviaTabares/STAT545-hw-Tabares-Olivia/tree/master/hw_02)  
+
 **_About me_**  
 ![](http://williamslabubc.weebly.com/uploads/1/7/1/0/17102980/published/olivia.jpeg?1504668424)  
 I am a new Ph.D. student at the Geography department at UBC, I´ll develop comprehensive models on spread of invasive plants that take into account landscape structure, population dynamics and biotic interactions.  
