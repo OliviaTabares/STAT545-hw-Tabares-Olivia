@@ -1,0 +1,73 @@
+---
+title: "Exploring Gapminder exercise"
+author: "Olivia Tabares-Mendoza"
+output: github_document
+---
+
+***
+**Explore the structure of the gapminder object**  
+
+The gapminder object has three classes: tibble diff(tbl_df),tbl and data.frame, so it is essentially a tibble: a dataframe with better formatting and visualization than a regular dataframe (object created with as.data.frame function) [pacakge tibble reference](https://cran.r-project.org/web/packages/tibble/tibble.pdf)  
+```{r}
+library(tidyverse)
+library(gapminder)
+str(gapminder)
+
+```
+Gapminder has 1706 rows and 6 columns. The variables are factors; (country and continent), integer vectors(year and population), and numeric vectors(lifeExp and gdpPercap).  
+This information can be obtained easily through the str()function but also through the following functions  
+
+```{r}
+class(gapminder)
+nrow(gapminder)
+ncol(gapminder)
+lapply(gapminder,class)
+
+```
+Information of lapply function was obtained from [stackoverflow](https://stackoverflow.com/questions/10661159/how-do-i-get-the-classes-of-all-columns-in-a-data-frame)  
+
+***  
+**Explore individual variables and build plots with ggplot**   
+
+I explored all the variables with the summary function
+```{r}
+summary(gapminder)
+```
+Through this function we can see the frecuency for each level of the continent and country factors, and descriptive statistics for all the numeric variables as well as the range and quartiles. 
+
+Exploring the data with histograms, we can see the population has a right skewed distribution with most of the countries having a population under 200,000,000 (2e+08) people through the years of study, we can see some outlayers as well
+```{r}
+library(ggplot2)
+p1<-ggplot(gapminder,aes(pop))+geom_histogram(fill="blue")+labs(x="Population", y="Frecuency")
+p1
+
+```
+
+
+we can further explore how population is distributed in the different continents and look closely at the outlayers
+```{r}
+p2<-ggplot(gapminder,aes(x=continent,y=pop))+geom_boxplot(fill="blue")+labs(x="Continent", y="Population")
+p2
+```
+
+
+Asia has the most outlayers which probably correspond to data of China and India  
+We can also explore how the GDP per capita has behaved through the years across continents
+```{r}
+p3<-ggplot(gapminder,aes(x=year,y=gdpPercap,color=continent))+geom_jitter()+labs(x="Year", y="GDP per capita")
+p3
+```  
+
+GDP per capita has a positive trend through the years, although for the Americas, Europe and Asia this growth is bigger than in Africa specially for 2000 and further. It is interesting to see how contients had a similar GDP in the fifties but since then they have shifted appart.  
+**Use of piping, filter and select functions**   
+
+Considering the data from the plot above, it comes into attention that Asia has some interesting outlayers, that I will explore by using the functions filter and select and then plot the results
+```{r}
+filter(gapminder,continent=="Asia")%>%
+  select(country,gdpPercap,year)%>%
+  filter(gdpPercap>30000)%>%
+  ggplot(aes(x=country, y=gdpPercap,size=year))+geom_point(alpha=0.25,color="blue")+labs(x="Country",y="GDP per capita")
+
+```
+
+It make sense that emerging world powers such as China and Japan had large GDPs in the 2000s as they secured new markets and invested in new technologies. The highest GDP per capita belongs to Kuwait in the 1960s, in that decade Kuwait became the largest oil exporter of the region attaining massive wealth and also attracting foreing investment. [History of Kuwait](https://en.wikipedia.org/wiki/History_of_Kuwait)
