@@ -1,0 +1,8 @@
+---
+title: "Process report"
+author: "Olivia Tabares-Mendoza"
+output: html_document
+---
+I had no problems making new Rmd files for the homework and in general I was able to go through the assignment easily, when I didn't know how to solve a particular issue, I googled it and then reference the website where I found the answer in the homework document. For ggplot I mainly used [zevRoss ggplot cheatsheet](http://zevross.com/blog/2014/08/04/beautiful-plotting-in-r-a-ggplot2-cheatsheet-3/#default-adding-loess-or-gam)  
+
+The problems I encountered probably had to do with my workflow, I created a folder for the homework after I pushed the files to the master branch, and I was not sure how to move them, so I uploaded the files again using the browser (I'm guessing that is not the way to do it)
