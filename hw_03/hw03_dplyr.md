@@ -52,7 +52,8 @@ ggplot(gdpmelt,aes(continent,value,fill=variable))+theme_bw() +
 
 ------------------------------------------------------------------------
 
-**Task 2. Spread of GDP by continent**
+**Task 2. Spread of GDP by continent**  
+
 I obtanied spread metrics for each of the continents and then used a boxplot for a graphical representation
 
 ``` r
@@ -75,8 +76,10 @@ ggplot(gapminder,aes(continent,gdpPercap))+theme_classic()+geom_boxplot(fill="tu
 
 ![](hw03_dplyr_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-5-1.png)
 
-It is interesting to see how Oceania has an evenly distributed GDP with the highest median value and only one outlayer, thus having less fluctuations over the years, perhaps an indicator of a stable economy, although these data only come from two countries: Australia and New Zealand
-**3. Life Expectancy over time**
+It is interesting to see how Oceania has an evenly distributed GDP with the highest median value and only one outlayer, thus having less fluctuations over the years, perhaps an indicator of a stable economy, although these data only come from two countries: Australia and New Zealand  
+
+**3. Life Expectancy over time**  
+
 For this task I created a time series for each continent using group\_by, select and summarise, using a mean per year as a summary variable
 
 ``` r
@@ -157,8 +160,10 @@ ggplot(lifeexp,aes(year,mean_lifeexp,color=continent))+geom_point()+geom_line()+
 
 ![](hw03_dplyr_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-7-1.png)
 
-Not surprisingly, Europe and Oceania have the highest life expectancies through time, but again of only considering two countries with strong economies like Australia and New Zealand bias these results, it would be interesting to see how this changes when incorporating data from developing countries such as Indonesia and Papua-New Guinea.
+Not surprisingly, Europe and Oceania have the highest life expectancies through time, but again of only considering two countries with strong economies like Australia and New Zealand bias these results, it would be interesting to see how this changes when incorporating data from developing countries such as Indonesia and Papua-New Guinea.  
+
 **Task 4. Statistical comparison of life Expectancy in four countries in LatinAmerica**  
+
 To compare the life expectancy of Mexico, Nicaragua, Argentina and Brazil I did a preliminary exploratory table and a time series plot, using dplyr and ggplot
 
 ``` r
