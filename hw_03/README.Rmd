@@ -1,0 +1,13 @@
+---
+title: "README"
+output: github_document
+---
+#**Homework 3**  
+Here you can find the [md](https://github.com/OliviaTabares/STAT545-hw-Tabares-Olivia/blob/master/hw_03/hw03_dplyr.md) and [Rmd](https://github.com/OliviaTabares/STAT545-hw-Tabares-Olivia/blob/master/hw_03/hw03_dplyr.Rmd)
+files for my third homework  
+
+**Process report**  
+Tasks were not too hard to accomplish although in some cases I felt either the table or the graph were enough to visualize information. Yet, it was a very useful
+exercise and I believe I have a good cheatsheet for dplyr and ggplot, complimented by external resources. My last task was an analisis of variance 
+to compare the life expectancies of four countries in latin america, I did an exploratory plot but ran out of time to produced the typical plot
+to show anova results (means and error bars), hopefully I can do it in another assignment.
