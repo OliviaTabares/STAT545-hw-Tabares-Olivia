@@ -158,7 +158,7 @@ ggplot(lifeexp,aes(year,mean_lifeexp,color=continent))+geom_point()+geom_line()+
 ![](hw03_dplyr_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-7-1.png)
 
 Not surprisingly, Europe and Oceania have the highest life expectancies through time, but again of only considering two countries with strong economies like Australia and New Zealand bias these results, it would be interesting to see how this changes when incorporating data from developing countries such as Indonesia and Papua-New Guinea.
-**Task 4. Statistical comparison of life Expectancy in four countries in LatinAmerica**
+**Task 4. Statistical comparison of life Expectancy in four countries in LatinAmerica**  
 To compare the life expectancy of Mexico, Nicaragua, Argentina and Brazil I did a preliminary exploratory table and a time series plot, using dplyr and ggplot
 
 ``` r
