@@ -1,0 +1,92 @@
+---
+title: "Homework 3: Use `dplyr` to manipulate and explore data (also use `ggplot2`)"
+author: "Olivia Tabares-Mendoza"
+output: github_document
+---
+
+First I loaded the required libraries, the suppressPackage function comes in handy for creating a cleaner report
+
+```{r}
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(gapminder))
+suppressPackageStartupMessages(library(ggplot2))
+
+```
+**Task 1.  Maximum and minimum GDP per continent**    
+
+In order to obtain this, I used the group_by function to perform analyses considering continents as a group, and I piped this into summarise function that allows me perform specific functions(like min and max) to groups of data. To display a nice table I used the kable function in the knitr package  
+[kable function reference](https://www.rdocumentation.org/packages/knitr/versions/1.17/topics/kable).
+```{r}
+GDP_percontinent<-gapminder %>%
+group_by(continent)%>% 
+summarise(minGDP = min(gdpPercap),maxGDP = max(gdpPercap))
+knitr::kable(GDP_percontinent, digits=2, col.names=c("Continent", "Minimum GDP Per Capita","Maximum GDP Per Capita"))
+```
+
+I used a bar plot for visualizing this infomation (although I believe that with the table is enough). To make the plot, it was necessary to use the melt function in the reshape2 package. This function allows you pile variables in a single column [melt reference](https://www.r-bloggers.com/melt/).  
+To modify the colors I consulted [plotly's geom_bar post](https://plot.ly/ggplot2/geom_bar/)  
+ and this [color guide](http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf)  
+```{r}
+suppressPackageStartupMessages(library(reshape2))
+gdpmelt<-melt(GDP_percontinent,id="continent")  
+ggplot(gdpmelt,aes(continent,value,fill=variable))+theme_bw() +
+  geom_bar(stat="identity", position="dodge")+
+  scale_fill_manual(values=c("violetred2", "turquoise2"))+
+  labs(x="Continent", y="GDP per capita")
+```
+
+---
+
+**Task 2. Spread of GDP by continent**  
+I obtanied spread metrics for each of the continents and then used a boxplot for a graphical representation
+```{r}
+spread<-group_by(gapminder,continent) %>% 
+  summarise(interq=IQR(gdpPercap),Median=median(gdpPercap))
+knitr::kable(spread,digits=2,col.names =c("Continent","Interquartile range","Median"))
+```
+
+
+```{r}
+ggplot(gapminder,aes(continent,gdpPercap))+theme_classic()+geom_boxplot(fill="turquoise2")+labs(x="Continent", y="GDP per capita")
+```
+
+It is interesting to see how Oceania has an evenly distributed GDP with the highest median value and only one outlayer, thus having less fluctuations over the years, perhaps an indicator of a stable economy, although these data only come from two countries: Australia and New Zealand  
+**3. Life Expectancy over time**  
+For this task I created a time series for each continent using group_by, select and summarise, using a mean per year as a summary variable
+```{r}
+lifeexp<-gapminder %>% group_by(continent,year) %>% 
+select(continent,lifeExp,year) %>% summarise(mean_lifeexp=mean(lifeExp))
+  
+knitr::kable(lifeexp,digits=2, col.names=c("Continent", "Year","Mean Life expectancy"))
+```
+
+This can be better sinthezised and visualized in a plot
+```{r}
+ggplot(lifeexp,aes(year,mean_lifeexp,color=continent))+geom_point()+geom_line()+theme_bw()+labs(x="Year", y="Mean Life Expectancy")
+```
+
+Not surprisingly, Europe and Oceania have the highest life expectancies through time, but again of only considering two countries with strong economies like Australia and New Zealand bias these results, it would be interesting to see how this changes when incorporating data from developing countries such as Indonesia and Papua-New Guinea.  
+**Task 4. Statistical comparison of life Expectancy in four countries in LatinAmerica**  
+To compare the life expectancy of Mexico, Nicaragua, Argentina and Brazil I did a preliminary exploratory table and a time series plot, using dplyr and ggplot
+```{r}
+latinamerica<-filter(gapminder,country%in%c("Mexico","Nicaragua","Argentina","Brazil")) %>% 
+  select(country,year,lifeExp)
+latinamerica2<-latinamerica %>% 
+  group_by(country) %>% 
+  summarise(mean=mean(lifeExp))
+knitr::kable(latinamerica2,digits=2)
+ggplot(latinamerica,aes(year,lifeExp,color=country))+geom_point()+geom_line()+theme_bw()
+```
+
+It looks like these four countries might have differences in their mean life expectancies, to test this I performed an analysis of variance(ANOVA) using aov function and testing the assumptions of normality and homoscedasticity through shapiro and bartlett test [ANOVA assumptions](https://sites.ualberta.ca/~lkgray/uploads/7/3/6/2/7362679/slides_-_anova_assumptions.pdf)
+
+```{r}
+anova1<-aov(lifeExp~country,data=latinamerica)
+shapiro.test(anova1$residuals) 
+bartlett.test(lifeExp~country,data=latinamerica)
+summary(anova1)
+TukeyHSD(anova1)
+```
+As I don't reject the null hipothesis for both tests I can proceed the analysis of variance, that indcates significant differences between the countries (F=4.24,p<0.05), the post-hoc test, Tukey HSD reveals that Argentina has a significantly higher mean life expectancy than Nicaragua, perhaps due to Nicaragua's Sandinist Revolution and consistent gang problems 
+
+
