@@ -1,0 +1,7 @@
+README
+================
+
+Here you can find the [Markdown]() and [Rmarkdown]()files of homework 04
+
+**Process Report** The reshape assignment went smoothly and it allowed me to understand how changing the shape of a data frame can facilitate visualization of information or is prefered for making plots
+As for the join assingment, I spent too much time figuring out what sort of complementary data frame I should build in order to render joined data frames to explain the joins. I did not explained each join properly
