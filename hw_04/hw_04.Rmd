@@ -1,0 +1,82 @@
+---
+title: "Homework 04: Tidy data and joins"
+output: github_document
+---
+
+First I must load the required libraries
+```{r}
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(gapminder))
+
+```
+
+###**General data reshaping task**
+I chose to do Activity #2:  
+_Make a tibble with one row per year and columns for life expectancy for two or more countries.Use knitr::kable() to make this table look pretty in your rendered homework.
+Take advantage of this new data shape to scatterplot life expectancy for one country against that of another_
+
+I made a "wide" dataframe for the countries in Scandinavia using the spread function. 
+```{r}
+viking_countries<-gapminder %>% 
+  select(year,country,lifeExp) %>% 
+  filter(country%in% c("Finland","Iceland","Norway","Sweden")) %>% 
+  spread(country,lifeExp)
+knitr::kable(viking_countries,digits = 2,
+       col.names = c("Year","Life Expectancy in Finland",
+        "Life Expectancy in Iceland","Life Expectancy in Norway",
+        "Life Expectancy in Sweden"),align = "c")
+```
+ 
+ This wide dataframe is easier to visualize if you want to make comparisons between the countries. In this case the countries behave very similar to one another from the 1980's to 2007. Before that, Finland had a lower life expectancy than the other countries in the Scandinavian Peninsula. We can see this in a time series graph, that would be easier to do in the "long format" that we can easily obtain with the gather() function
+ 
+```{r}
+longframe<-viking_countries %>% 
+  gather(key="Country",value="Life_Expectancy",Finland:Sweden)%>%
+  ggplot(aes(year,Life_Expectancy,color=Country))+
+  geom_point()+
+  geom_line()+
+  theme_bw()
+longframe
+```
+As suggested by the prompt, I plotted the life expectancies of the countries against each other using the pairs function (I couldn't find a way to do this in ggplot)
+```{r}
+pairs(~Finland+Iceland+Norway+Sweden,data=viking_countries)
+```
+
+
+###**Join task**  
+
+**1. Create a new dataframe that complements a part of gapminder**  
+First I selected a part of gapminder to work with
+```{r}
+scandinavia<-gapminder %>% 
+  filter(country%in% c("Finland","Iceland","Norway","Sweden"),year>2000)
+
+knitr::kable(scandinavia)
+```
+
+Then I created the complementary data frame
+```{r}
+complement<-data.frame(country=c("Finland","Denmark","Norway","Sweden"),
+                          language=c("Suomi","Dansk","Norsk","Svensk"),
+                                     Uses_Euro=c("YES","NO","NO","NO"))
+knitr::kable(complement)
+```
+
+**2.Explore joins**  
+Using the data frames that I created I explored all the joins, an explanation of how they work can be found in
+this useful cheatsheet  ![](http://2.bp.blogspot.com/-01CG3bwfd40/Vq9vb7fFKbI/AAAAAAAABvE/H26s4Qehbzg/s1600/Capture.PNG)   
+
+This is part of the excellent [Data Wrangling in R cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf)
+
+```{r}
+knitr::kable(left_join(scandinavia,complement))
+knitr::kable(right_join(scandinavia,complement))
+knitr::kable(full_join(scandinavia,complement))
+knitr::kable(inner_join(scandinavia,complement))
+knitr::kable(semi_join(scandinavia,complement))
+knitr::kable(anti_join(scandinavia,complement))
+
+```
+
+
