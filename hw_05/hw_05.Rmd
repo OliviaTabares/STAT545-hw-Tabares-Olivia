@@ -1,0 +1,139 @@
+---
+title: "Homework 05-Factor and figure management; Repo hygiene"
+author: "Olivia Tabares-Mendoza"
+output: github_document
+---
+**Load libraries used**
+```{r}
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(gapminder))
+suppressPackageStartupMessages(library(knitr))
+suppressPackageStartupMessages(library(forcats))
+suppressPackageStartupMessages(library(singer)) 
+```
+
+##**Factor management**  
+
+Factors are a data type in R for categorical variables, every value that a factor can take is called a level (eg. if the factor is color the levels would be red, blue, magenta, green etc.). Not to confound with statistical factors, those are the explanatory or independent variables. 
+
+**Task 1-drop Oceania**  
+
+We start by examining the data frame and the factors
+```{r}
+glimpse(gapminder)
+fct_count(gapminder$continent)
+```
+
+Then we drop Oceania by first using filter with the logical operator ! (not equal to).  
+
+When we compare the number of observations of original gapminder (1704) vs the number of the subsetted gapminder (1680) we can see oceania has been filtered but as we haven't applied a function that gets rid of the unused factors, thus Oceania still appears
+```{r}
+subs_gapminder<-gapminder %>%
+  filter(continent!="Oceania")
+glimpse(subs_gapminder)
+fct_count(subs_gapminder$continent)
+  
+```
+
+We can use the function drop factors to get rid of the unused factors, now there are four factors and we have succesfully dropped Oceania
+```{r}
+  subs_gapminder$continent %>% droplevels() %>% 
+fct_count
+  
+```
+
+
+**Task 2**  
+**Reorder the levels of country or continent. Use the forcats package to change the order of the factor levels, based on a principled summary of one of the quantitative variables. Consider experimenting with a summary statistic beyond the most basic choice of the median** 
+
+Without reordering, the factor  country is  just ordered in an alphabetical way
+```{r}
+head(levels(gapminder$country))
+```
+When we reorder, in this case using the maximum population as the principle summary for ordering we obtain the countries ordered in a descending order, this allow us to quickly visualize which countries are most populated. 
+```{r}
+fct_reorder(f=gapminder$country,
+            x=gapminder$pop,
+            fun=max,.desc=T) %>% 
+  levels() %>% head()
+
+  
+```
+**Task 3**  
+**Explore the effects of arrange(). Does merely arranging the data have any effect on, say, a figure?**
+
+To do this I am ordering the database also using the maximum population but subsetting gapminder to consider only countries in America. First let's look at the data without arrange and plot them
+```{r}
+pop_gapminder_america <- gapminder %>%
+  filter(continent=="Americas") %>% 
+  group_by(country) %>%
+  summarise(pop_max= max(pop))
+ 
+kable(pop_gapminder_america,
+      digits=2,
+      col.names=c("Country","Maximum Population"),
+      align="c")
+```
+
+```{r}
+ggplot(pop_gapminder_america,aes(x=pop_max, y=country))+
+  geom_point(color="violetred3")+
+  ggtitle("Maximum Population of American Countries" )
+```
+Again the data is ordered alphabetically which isn't very useful
+
+Now if we arrange in a descending order we can get the most populated nations in a table
+    
+```{r}
+pop_gapminder_america2 <- gapminder %>%
+  filter(continent=="Americas") %>% 
+  group_by(country) %>%
+  summarise(pop_max= max(pop)) %>% 
+  arrange(desc(pop_max))
+  
+kable(pop_gapminder_america2,
+      digits=2,
+      col.names=c("Country","Maximum Population"),
+      align="c")
+```
+
+The table is adequate but if we plot this arranged dataframe we still get the countries ordered alphabetically in the plot. Thus arrange alone is not sufficient to render good plots
+```{r}
+ggplot(pop_gapminder_america2,aes(x=pop_max, y=country))+
+  geom_point(color="violetred3")+
+  ggtitle("Maximum Population of American Countries" )
+```
+
+** Task 4. Explore the effects of reordering a factor and factor reordering coupled with arrange(). Especially, what effect does this have on a figure?**
+
+factor reordering
+Using the countries in America I reordered the factor country using the maximum population size  
+```{r}
+pop_gapminder_america <- gapminder %>%
+  filter(continent=="Americas") %>% 
+  group_by(country) %>%
+  summarise(pop_max= max(pop))
+ggplot(pop_gapminder_america,(aes(x=pop_max,
+                                 y=fct_reorder(country,pop_max))))+
+  geom_point(color="violetred3")+
+  ggtitle("Maximum Population of American Countries" )
+```
+Now if we use arrange and fct_reorder together we can get an ordered table and figure
+```{r}
+pop_gapminder_america <- gapminder %>%
+  filter(continent=="Americas") %>% 
+  group_by(country) %>%
+  summarise(pop_max= max(pop)) %>% 
+arrange(desc(pop_max))
+
+kable(pop_gapminder_america,
+      digits=2,
+      col.names=c("Country","Maximum Population"),
+      align="c")
+ggplot(pop_gapminder_america,(aes(x=pop_max,
+                                 y=fct_reorder(country,pop_max))))+
+  geom_point(color="violetred3")+
+  ggtitle("Maximum Population of American Countries" )
+```
+```
+
