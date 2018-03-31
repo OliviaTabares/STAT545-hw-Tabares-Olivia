@@ -198,5 +198,7 @@ ggsave("LifeExp_continents.jpg",lifeexp2)
 ```
 and then we can import it using ! ![life expectancy plot](C:/Users/Liv/Documents/STAT545/STAT545-hw-Tabares-Olivia/hw_05/lifeExp_continents.jpg)
 
+just testing github works
+
 
 
